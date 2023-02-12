@@ -27,11 +27,9 @@ from tqdm import tqdm
 from loading import save_model
 from ppo import make_actor, make_critic
 
-# TODO how to save and load model - probably save config, save networks state dicts; then load config, init networks load state dicts and then init all the modules again
 # TODO is this really working?
 # TODO how to make own environment
 # TODO render to see if it's working
-# TODO log frame count to be able to show wandb runs in that x axis
 
 if __name__ == '__main__':
 
