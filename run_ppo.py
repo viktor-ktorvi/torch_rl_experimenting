@@ -187,6 +187,8 @@ if __name__ == '__main__':
     pbar = tqdm(total=config["total_frames"] * config["frame_skip"])
     eval_str = ""
 
+    wandb.config.update(config, allow_val_change=True)
+
     # TODO why does it start fast and then slows down?
     # We iterate over the collector until it reaches the total number of frames it was
     # designed to collect:
