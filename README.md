@@ -13,4 +13,5 @@ pip install matplotlib
 pip install tqdm
 pip install wandb
 pip install gym[mujoco]
+pip install hydra-core --upgrade
 ```
