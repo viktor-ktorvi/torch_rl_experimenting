@@ -23,6 +23,12 @@ def save_model(config, actor, critic, filename='model_state.p'):
     return filename
 
 
+def load_config(filename):
+    objs = torch.load(filename)
+
+    return objs["config"]
+
+
 def load_model(filename, env):
     objs = torch.load(filename)
 
