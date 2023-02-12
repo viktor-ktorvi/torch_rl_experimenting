@@ -1,9 +1,12 @@
+import os
 import torch
 import wandb
 
 import matplotlib.pyplot as plt
 
 from collections import defaultdict
+from pathlib import Path
+
 from tensordict.nn import TensorDictModule
 
 from torchrl.collectors import SyncDataCollector
@@ -18,8 +21,10 @@ from torchrl.modules import TanhNormal, ProbabilisticActor, ValueOperator
 from torchrl.objectives import ClipPPOLoss
 from torchrl.objectives.value import GAE
 from torchrl.data import CompositeSpec
+
 from tqdm import tqdm
 
+from loading import save_model
 from ppo import make_actor, make_critic
 
 # TODO how to save and load model - probably save config, save networks state dicts; then load config, init networks load state dicts and then init all the modules again
@@ -53,7 +58,7 @@ if __name__ == '__main__':
     config["frames_per_batch"] = 100 // config["frame_skip"]  # how many frames to take from the environment
     config["total_frames"] = 50_000 // config["frame_skip"]  # total number of frames to get from the environment
 
-    wandb.init(project=config["env_name"] + '_' + config["algorithm"])
+    wandb.init(project=config["env_name"] + '_' + config["algorithm"])  # log using weights and biases
 
     base_env = GymEnv(env_name=config["env_name"], device=config["device"], frame_skip=config["frame_skip"])
     print("\nInit td:\n", base_env.reset())
@@ -77,8 +82,7 @@ if __name__ == '__main__':
     config["action maximum"] = env.action_spec.space.maximum
     config["action minimum"] = env.action_spec.space.minimum
 
-    # get mean and std from the environment to normalize samples
-    env.transform[0].init_stats(num_iter=1000, reduce_dim=0, cat_dim=0)
+    env.transform[0].init_stats(num_iter=1000, reduce_dim=0, cat_dim=0)  # get mean and std from the environment to normalize samples
 
     print("\nObservation loc(mean):\n", env.transform[0].loc)
     print("\nObservation scale(std):\n", env.transform[0].scale)
@@ -262,6 +266,15 @@ if __name__ == '__main__':
         # We're also using a learning rate scheduler. Like the gradient clipping,
         # this is a nice-to-have but nothing necessary for PPO to work.
         scheduler.step()
+
+    env_path = config["env_name"].replace('-', '_')
+    Path(env_path).mkdir(exist_ok=True)
+
+    algorithm_path = os.path.join(env_path, config["algorithm"])
+    Path(algorithm_path).mkdir(exist_ok=True)
+
+    filepath = save_model(config, actor_net, value_net, filename=os.path.join(algorithm_path, 'model_state.p'))
+    wandb.save(filepath)
 
     plt.figure(figsize=(10, 10))
     plt.subplot(2, 2, 1)

@@ -1,9 +1,10 @@
+from tensordict.nn import TensorDictModule
+from tensordict.nn.distributions import NormalParamExtractor
+
 import torch.nn as nn
 
-from tensordict.nn.distributions import NormalParamExtractor
-from tensordict.nn import TensorDictModule
-
 from torchrl.modules import TanhNormal, ProbabilisticActor, ValueOperator
+
 from torchvision.ops import MLP
 
 
