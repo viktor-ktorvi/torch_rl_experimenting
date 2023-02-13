@@ -18,13 +18,14 @@ import ppo
 from loading import load_yaml, save_model
 
 # TODO is this really working?
+# TODO make config and loading for custom environment. Train it
 
 if __name__ == '__main__':
+    # TODO learn how to use hydra
     config = load_yaml("ppo_config_InvertedDoublePendulum.yaml")
     # a frame is a timestep
     config["frames_per_batch"] = config["frames_per_batch_init"] // config["frame_skip"]  # how many frames to take from the environment
     config["total_frames"] = config["total_frames_init"] // config["frame_skip"]  # total number of frames to get from the environment
-
 
     wandb.init(project=config["env_name"] + '_' + config["algorithm"])  # log using weights and biases
     # TODO update config with wandb config in case of sweeps
