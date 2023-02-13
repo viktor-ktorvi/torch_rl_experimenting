@@ -9,17 +9,13 @@ import matplotlib.pyplot as plt
 
 from pathlib import Path
 
-from torchrl.envs import TransformedEnv, ObservationNorm, Compose, DoubleToFloat, StepCounter
-from torchrl.envs.libs.gym import GymEnv
 from torchrl.envs.utils import check_env_specs
 
 import ppo
 
-from custom_environment import controllable_linear_system, SystemEnvironment
-from loading import load_yaml, save_model
+from loading import init_environment, load_yaml, save_model
 
 # TODO is this really working?
-# TODO make config and loading for custom environment. Train it
 
 if __name__ == '__main__':
     # TODO learn how to use hydra
@@ -32,33 +28,16 @@ if __name__ == '__main__':
     wandb.init(project=config["env_name"] + '_' + config["algorithm"])  # log using weights and biases
     # TODO update config with wandb config in case of sweeps
 
-    # load environment
-    if config["env_name"] in ["InvertedDoublePendulum-v4"]:
-        base_env = GymEnv(env_name=config["env_name"], device=config["device"], frame_skip=config["frame_skip"])
-    elif config["env_name"] == "LinearSystem":
-        A, B, C, D = controllable_linear_system(a=tuple(config["characteristic_polynomial_coeffs"]))
-        base_env = SystemEnvironment(A, B, C, D, config["dt"])
-    else:
-        raise ValueError("Environment named '{:s}' is not supported.".format(config["env_name"]))
-    print("\nInit td:\n", base_env.reset())
+    env = init_environment(config)
+
+    # TODO num_iter should be in the config/defaults
+    env.transform[0].init_stats(num_iter=2000, reduce_dim=0, cat_dim=0)  # get mean and std from the environment to normalize samples
 
     # set random seeds
     torch.manual_seed(config['random_seed'])
     np.random.seed(config['random_seed'])
     random.seed(config['random_seed'])
-    base_env.set_seed(config['random_seed'])
-
-    env = TransformedEnv(
-        base_env,
-        Compose(
-            # normalize observations
-            ObservationNorm(in_keys=["observation"]),
-            DoubleToFloat(in_keys=["observation"], ),
-            StepCounter()
-        )
-    )
-
-    env.transform[0].init_stats(num_iter=2000, reduce_dim=0, cat_dim=0)  # get mean and std from the environment to normalize samples
+    env.set_seed(config['random_seed'])
 
     print("\nObservation loc(mean):\n", env.transform[0].loc)
     print("\nObservation scale(std):\n", env.transform[0].scale)
