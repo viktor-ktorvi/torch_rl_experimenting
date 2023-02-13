@@ -1,5 +1,4 @@
 import os
-import torch
 import wandb
 
 import matplotlib.pyplot as plt
@@ -12,34 +11,15 @@ from torchrl.envs.utils import check_env_specs
 
 import ppo
 
-from loading import save_model
+from loading import load_yaml, save_model
 
 # TODO is this really working?
 
 if __name__ == '__main__':
-    config = {
-        "env_name": "InvertedDoublePendulum-v4",
-        "algorithm": "ppo",
-        "device": "cpu" if not torch.has_cuda else "cuda:0",
-        "actor_width": 16,  # number of neurons in each layer
-        "actor_num_hidden": 3,  # number of hidden layers
-        "critic_width": 16,  # number of neurons in each layer
-        "critic_num_hidden": 3,  # number of hidden layers
-        "learning rate": 3e-3,  # learning rate
-        "max_grad_norm": 1.0,  # gradient clipping max value
-        "frame_skip": 1,  # repeating the same action multiple times over the course of a trajectory
-        "sub_batch_size": 64,  # gradient descent mini-batch size
-        "num_epochs": 10,  # number of gradient descent updates(sample from the replay buffer that many times)
-        "clip_epsilon": 0.2,  # clip value for PPO loss: see the equation in the intro for more
-        "gamma": 0.99,  # discount factor
-        "lambda": 0.95,  # a ppo parameter
-        "entropy_eps": 1e-4,  # a ppo parameter,
-        "max_frames_per_trajectory": 1000  # after how many frames to reset the environment; default = -1
-    }
-
+    config = load_yaml("ppo_config_InvertedDoublePendulum.yaml")
     # a frame is a timestep
-    config["frames_per_batch"] = 100 // config["frame_skip"]  # how many frames to take from the environment
-    config["total_frames"] = 50_000 // config["frame_skip"]  # total number of frames to get from the environment
+    config["frames_per_batch"] = config["frames_per_batch_init"] // config["frame_skip"]  # how many frames to take from the environment
+    config["total_frames"] = config["total_frames_init"] // config["frame_skip"]  # total number of frames to get from the environment
 
     wandb.init(project=config["env_name"] + '_' + config["algorithm"])  # log using weights and biases
     # TODO update config with wandb config in case of sweeps

@@ -1,0 +1,79 @@
+env_name:
+  desc: name of environment
+  value: "InvertedDoublePendulum-v4"
+
+algorithm:
+  desc: name of algorithm
+  value: "ppo"
+
+device:
+  desc: the device to train on
+  value: "cuda:0"
+
+actor_width:
+  desc: hidden layer width of the actor network
+  value: 16
+
+actor_num_hidden:
+  desc: number of hidden layers of the actor network
+  value: 3
+
+critic_width:
+  desc: hidden layer width of the critic network
+  value: 16
+
+critic_num_hidden:
+  desc: number of hidden layers of the critic network
+  value: 3
+
+learning rate:
+  desc: learning rate for both networks
+  value: 3.0e-3 # numbers given in scientific notation should have the dot. 1e-3 wouldn't work
+
+max_grad_norm:
+  desc: gradient clipping max norm value
+  value: 1.0
+
+frame_skip:
+  desc: repeating the same action multiple times over the course of a trajectory
+  value: 1
+
+frames_per_batch_init:
+  desc: how many frames at a time does the collector return; needs to be adjusted for frame skip
+  value: 100
+
+total_frames_init:
+  desc: total number of frames to collect from the environment; needs to be adjusted for frame skip
+  value: 50000
+
+sub_batch_size:
+  desc: gradient descent mini-batch size
+  value: 64
+
+num_epochs:
+  desc: number of gradient descent updates(sample from the replay buffer that many times)
+  value: 10
+
+clip_epsilon:
+  desc: clip value for PPO loss
+  value: 0.2
+
+gamma:
+  desc: reward discount factor
+  value: 0.99
+
+lambda:
+  desc: a ppo parameter
+  value: 0.95
+
+entropy_eps:
+  desc: a ppo parameter
+  value: 1.0e-4
+
+max_frames_per_trajectory:
+  desc: after how many frames to reset the environment; default = -1 for no resets
+  value: 1000
+
+
+
+

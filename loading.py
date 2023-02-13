@@ -1,4 +1,5 @@
 import torch
+import yaml
 
 import ppo
 
@@ -40,6 +41,16 @@ def load_model(filename, env):
         return ppo.load_policy(config, objs, env)
     else:
         raise ValueError("Loading algorithm '{:s}' is not supported.".format(config["algorithm"]))
+
+
+def load_yaml(filepath):
+    with open(filepath, 'r') as stream:
+        dictionary = yaml.safe_load(stream)
+
+    for key in dictionary.keys():
+        dictionary[key] = dictionary[key]["value"]
+
+    return dictionary
 
 
 if __name__ == '__main__':
