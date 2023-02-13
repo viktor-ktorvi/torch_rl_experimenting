@@ -67,13 +67,12 @@ class SystemEnvironment(EnvBase):
         self.reward_spec = UnboundedContinuousTensorSpec(shape=torch.Size([1]))
 
     def _reset(self, tensordict, **kwargs):
-        if tensordict is None:
-            tensordict = TensorDict({}, batch_size=torch.Size())
+        out_tensordict = TensorDict({}, batch_size=torch.Size())
 
         self.state = np.zeros((self.state_size, 1), dtype=self.dtype)
-        tensordict.set("observation", torch.tensor(self.state.flatten(), device=self.device))
+        out_tensordict.set("observation", torch.tensor(self.state.flatten(), device=self.device))
 
-        return tensordict
+        return out_tensordict
 
     def _step(self, tensordict):
         action = tensordict["action"]
@@ -87,8 +86,8 @@ class SystemEnvironment(EnvBase):
 
         reward = -error
 
-        out_tensordict = TensorDict({"observation": self.state.astype(self.dtype).flatten(),
-                                     "reward": reward.astype(np.float32),
+        out_tensordict = TensorDict({"observation": torch.tensor(self.state.astype(self.dtype).flatten(), device=self.device),
+                                     "reward": torch.tensor(reward.astype(np.float32), device=self.device),
                                      "done": False}, batch_size=torch.Size())
 
         return out_tensordict

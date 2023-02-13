@@ -34,3 +34,5 @@ if __name__ == '__main__':
 
     # should be around 9.25 for InvertedDoublePendulum_v4
     print("Mean evaluation reward: {:2.4f}".format(eval_rollout["reward"].mean().item()))
+
+    # TODO evaluate LinearSystem

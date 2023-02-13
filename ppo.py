@@ -70,7 +70,7 @@ def load_policy(config, objs, env):
     return policy_module, value_module
 
 
-def train(config, env, vebose=True):
+def train(config, env, verbose=True):
     # TODO update config with wandb in case of a sweep
 
     if type(env.observation_spec) == CompositeSpec:
@@ -158,7 +158,7 @@ def train(config, env, vebose=True):
 
     wandb.config.update(config, allow_val_change=True)
 
-    if vebose:
+    if verbose:
         print("\nPolicy module v1:\n", policy_module)
 
         print("\nPolicy module v2:\n", policy_module)
@@ -228,7 +228,7 @@ def train(config, env, vebose=True):
             # it will then execute this policy at each step.
             with set_exploration_mode("mean"), torch.no_grad():
                 # execute a rollout with the trained policy
-                eval_rollout = env.rollout(1000, policy_module)
+                eval_rollout = env.rollout(config["max_eval_steps"], policy_module)
                 logs["eval reward"].append(eval_rollout["reward"].mean().item())
                 logs["eval reward (sum)"].append(
                     eval_rollout["reward"].sum().item()
@@ -236,8 +236,15 @@ def train(config, env, vebose=True):
                 logs["eval step_count"].append(
                     eval_rollout["step_count"].max().item()
                 )
+                logs["eval action mean"].append(eval_rollout["action"].mean().item())
+                logs["eval action std"].append(eval_rollout["action"].std().item())
 
-                wandb.log({"evaluation return": logs["eval reward (sum)"][-1]}, step=i)
+                # TODO log validation reward and mean action and std etc.
+                wandb.log({"evaluation return": logs["eval reward (sum)"][-1],
+                           "evaluation reward": logs["eval reward"][-1],
+                           "evaluation action mean": logs["eval action mean"][-1],
+                           "evaluation action std": logs["eval action std"][-1]
+                           }, step=i)
 
                 eval_str = f"eval cumulative reward: {logs['eval reward (sum)'][-1]: 4.4f} (init: {logs['eval reward (sum)'][0]: 4.4f}), eval step-count: {logs['eval step_count'][-1]}"
                 del eval_rollout

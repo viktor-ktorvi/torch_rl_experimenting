@@ -1,6 +1,16 @@
 env_name:
   desc: name of environment
-  value: "InvertedDoublePendulum-v4"
+  value: "LinearSystem"
+
+characteristic_polynomial_coeffs:
+  desc: the coeffs of the polynomial f(s) = s^n + a_n-1 s^n-1 + ... + a_1 s + a_0; starting with a_0 and ending with a_n-1
+  value:
+    - 0
+    - 1
+
+dt:
+  desc: sampling rate of the discrete system
+  value: 1.0e-2
 
 algorithm:
   desc: name of algorithm
@@ -12,19 +22,19 @@ device:
 
 actor_width:
   desc: hidden layer width of the actor network
-  value: 16
+  value: 8
 
 actor_num_hidden:
   desc: number of hidden layers of the actor network
-  value: 3
+  value: 1
 
 critic_width:
   desc: hidden layer width of the critic network
-  value: 16
+  value: 8
 
 critic_num_hidden:
   desc: number of hidden layers of the critic network
-  value: 3
+  value: 1
 
 learning rate:
   desc: learning rate for both networks
@@ -36,7 +46,7 @@ max_grad_norm:
 
 frame_skip:
   desc: repeating the same action multiple times over the course of a trajectory
-  value: 1
+  value: 1 # this feature isn't supported in SystemEnvironment so it should always be 1
 
 frames_per_batch_init:
   desc: how many frames at a time does the collector return; needs to be adjusted for frame skip
@@ -44,7 +54,7 @@ frames_per_batch_init:
 
 total_frames_init:
   desc: total number of frames to collect from the environment; needs to be adjusted for frame skip
-  value: 25000
+  value: 100000
 
 sub_batch_size:
   desc: gradient descent mini-batch size
@@ -72,7 +82,7 @@ entropy_eps:
 
 max_frames_per_trajectory:
   desc: after how many frames to reset the environment; default = -1 for no resets
-  value: 1000
+  value: 2000
 
 max_eval_steps:
   desc: for how many steps to evaluate the environment at most
