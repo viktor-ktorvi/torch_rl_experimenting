@@ -144,9 +144,11 @@ def train(config, env, vebose=True):
     )
 
     optim = torch.optim.Adam(loss_module.parameters(), config["learning rate"])
+
+    # TODO maybe the scheduler should be customizable in the future
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optim,
-        config["total_frames"] // config["frames_per_batch"],
+        config["total_frames"] // config["frames_per_batch"] * 1.5,
         0.0
     )
 

@@ -1,5 +1,9 @@
+import random
 import os
+import torch
 import wandb
+
+import numpy as np
 
 import matplotlib.pyplot as plt
 
@@ -21,12 +25,19 @@ if __name__ == '__main__':
     config["frames_per_batch"] = config["frames_per_batch_init"] // config["frame_skip"]  # how many frames to take from the environment
     config["total_frames"] = config["total_frames_init"] // config["frame_skip"]  # total number of frames to get from the environment
 
+
     wandb.init(project=config["env_name"] + '_' + config["algorithm"])  # log using weights and biases
     # TODO update config with wandb config in case of sweeps
 
     # load environment
     base_env = GymEnv(env_name=config["env_name"], device=config["device"], frame_skip=config["frame_skip"])
     print("\nInit td:\n", base_env.reset())
+
+    # set random seeds
+    torch.manual_seed(config['random_seed'])
+    np.random.seed(config['random_seed'])
+    random.seed(config['random_seed'])
+    base_env.set_seed(config['random_seed'])
 
     env = TransformedEnv(
         base_env,

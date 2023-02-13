@@ -44,7 +44,7 @@ frames_per_batch_init:
 
 total_frames_init:
   desc: total number of frames to collect from the environment; needs to be adjusted for frame skip
-  value: 50000
+  value: 25000
 
 sub_batch_size:
   desc: gradient descent mini-batch size
@@ -74,6 +74,9 @@ max_frames_per_trajectory:
   desc: after how many frames to reset the environment; default = -1 for no resets
   value: 1000
 
+random_seed:
+  desc: random seed for the random number generators
+  value: 123
 
 
 
