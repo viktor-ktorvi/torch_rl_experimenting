@@ -38,13 +38,17 @@ if __name__ == '__main__':
 
         plt.figure()
         plt.title("Output")
-        plt.step(env_time_axis, y_env, label='y')
+        plt.step(env_time_axis, y_env, label='output')
         plt.axhline(env.ref, color='r', label='reference')
+        plt.xlabel("t[s]")
+        plt.ylabel("y")
         plt.legend()
 
         plt.figure()
         plt.title("Reward")
         plt.step(env_time_axis, eval_rollout["reward"].cpu().numpy().flatten(), label='reward')
+        plt.xlabel('t[s]')
+        plt.ylabel("r")
         plt.legend()
 
         plt.show()

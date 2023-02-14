@@ -97,12 +97,12 @@ class SystemEnvironment(EnvBase):
 
 
 if __name__ == '__main__':
-    dt = 1e-2  # sec; the sampling period
+    dt = 1e-1  # sec; the sampling period
 
     # side note: f = 1/dt should be 10 to 40 times larger than the natural frequency fn of the system(open loop I think) which in out case
     # boils down to fn = sqrt(a[0]) / 2 / pi
 
-    A, B, C, D = controllable_linear_system(a=(2.0, 1.0))
+    A, B, C, D = controllable_linear_system(a=(0.5, 1.0))
 
     sys = control.ss(A, B, C, D)
 

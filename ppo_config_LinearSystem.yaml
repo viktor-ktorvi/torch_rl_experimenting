@@ -5,12 +5,12 @@ env_name:
 characteristic_polynomial_coeffs:
   desc: the coeffs of the polynomial f(s) = s^n + a_n-1 s^n-1 + ... + a_1 s + a_0; starting with a_0 and ending with a_n-1
   value:
-    - 0
+    - 0.5
     - 1
 
 dt:
   desc: sampling rate of the discrete system
-  value: 1.0e-2
+  value: 1.0e-1
 
 algorithm:
   desc: name of algorithm
@@ -26,7 +26,7 @@ actor_width:
 
 actor_num_hidden:
   desc: number of hidden layers of the actor network
-  value: 1
+  value: 2
 
 critic_width:
   desc: hidden layer width of the critic network
@@ -34,7 +34,7 @@ critic_width:
 
 critic_num_hidden:
   desc: number of hidden layers of the critic network
-  value: 1
+  value: 2
 
 learning rate:
   desc: learning rate for both networks
@@ -82,11 +82,11 @@ entropy_eps:
 
 max_frames_per_trajectory:
   desc: after how many frames to reset the environment; default = -1 for no resets
-  value: 2000
+  value: 1000
 
 max_eval_steps:
   desc: for how many steps to evaluate the environment at most
-  value: 2000
+  value: 1000
 
 random_seed:
   desc: random seed for the random number generators
